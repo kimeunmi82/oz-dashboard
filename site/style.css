@@ -1,13 +1,19 @@
-/* tokens: light, then dark (system or [data-theme]) */
-:root{--color-bg:#f6f6f3;--color-panel:#fff;--color-fg:#1b1d21;--color-fg-muted:#5f656e;--color-border-line:#e1e1dc;--color-bad:#c0392b;
---accent:#2b6cb0;--cds-chart-muted:#c4c9d0;--cds-chart-grid:#ecece8;--cds-chart-axis:#9aa0a8;--cds-chart-status-critical:#c0392b;
---cds-text-secondary:#5f656e;--cds-surface-popover:#fff;--cds-border:#d8d8d2;--cds-shadow-popover:0 4px 14px rgba(0,0,0,.14);
---cds-radius:8px;--cds-pad-xs:.25rem;--cds-pad-sm:.5rem;--cds-pad-lg:1.1rem;--cds-gap-xs:.25rem;--cds-gap-sm:.5rem;--cds-gap-md:.9rem;--cds-gap-lg:1.5rem;
---cds-font-size-caption:.78rem;--cds-font-size-body:.9rem;--cds-font-size-heading:1.05rem;--cds-font-size-title:1.7rem;--cds-font-weight-medium:600;--cds-dur-slow:.2s;
---font-anthropic-sans:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;--font-anthropic-serif:"Noto Serif KR","Apple SD Gothic Neo",Georgia,serif;color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--color-bg:#141518;--color-panel:#1d1f24;--color-fg:#ececea;--color-fg-muted:#9aa0a8;--color-border-line:#2e3138;--color-bad:#ef6b5b;--accent:#6ea8e6;--cds-chart-muted:#454a53;--cds-chart-grid:#2a2d33;--cds-chart-axis:#6b717a;--cds-chart-status-critical:#ef6b5b;--cds-text-secondary:#9aa0a8;--cds-surface-popover:#262a30;--cds-border:#3a3e46;--cds-shadow-popover:0 4px 14px rgba(0,0,0,.5);color-scheme:dark}}
-:root[data-theme="dark"]{--color-bg:#141518;--color-panel:#1d1f24;--color-fg:#ececea;--color-fg-muted:#9aa0a8;--color-border-line:#2e3138;--color-bad:#ef6b5b;--accent:#6ea8e6;--cds-chart-muted:#454a53;--cds-chart-grid:#2a2d33;--cds-chart-axis:#6b717a;--cds-chart-status-critical:#ef6b5b;--cds-text-secondary:#9aa0a8;--cds-surface-popover:#262a30;--cds-border:#3a3e46;--cds-shadow-popover:0 4px 14px rgba(0,0,0,.5);color-scheme:dark}
-body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-anthropic-sans)}
+/* Design tokens from Montage (wanteddev/montage-web, MIT): packages/theme semantic light/dark, typography, radius, spacing.
+   Legacy variable names below are aliases onto Montage values. */
+:root{
+--mt-bg:#F7F7F8;--mt-surface:#FFFFFF;--mt-fg:#171719;--mt-fg-secondary:rgba(46,47,51,.88);
+--mt-line:#EAEBEC;--mt-line-strong:#E1E2E4;--mt-line-faint:#F4F4F5;
+--mt-brand:#0066FF;--mt-negative:#E52222;--mt-positive:#00BF40;--mt-cautionary:#FF9200;
+--mt-fill:#DBDCDF;--mt-axis:#AEB0B6;--mt-shadow-popover:0 4px 6px -2px rgba(23,23,23,.07),0 10px 15px -3px rgba(23,23,23,.07);
+--mt-radius-card:12px;--mt-radius-control:8px;--mt-radius-bar:4px;
+--color-bg:var(--mt-bg);--color-panel:var(--mt-surface);--color-fg:var(--mt-fg);--color-fg-muted:var(--mt-fg-secondary);--color-border-line:var(--mt-line);--color-bad:var(--mt-negative);
+--accent:var(--mt-brand);--cds-chart-muted:var(--mt-fill);--cds-chart-grid:var(--mt-line);--cds-chart-axis:var(--mt-axis);--cds-chart-status-critical:var(--mt-negative);
+--cds-text-secondary:var(--mt-fg-secondary);--cds-surface-popover:var(--mt-surface);--cds-border:var(--mt-line-strong);--cds-shadow-popover:var(--mt-shadow-popover);
+--cds-radius:var(--mt-radius-card);--cds-pad-xs:4px;--cds-pad-sm:8px;--cds-pad-lg:20px;--cds-gap-xs:4px;--cds-gap-sm:8px;--cds-gap-md:16px;--cds-gap-lg:24px;
+--cds-font-size-caption:.75rem;--cds-font-size-body:.875rem;--cds-font-size-heading:1.0625rem;--cds-font-size-title:1.5rem;--cds-font-weight-medium:600;--cds-dur-slow:.2s;
+--font-anthropic-sans:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;--font-anthropic-serif:var(--font-anthropic-sans);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--mt-bg:#0F0F10;--mt-surface:#1B1C1E;--mt-fg:#F7F7F8;--mt-fg-secondary:rgba(194,196,200,.88);--mt-line:#333438;--mt-line-strong:#37383C;--mt-line-faint:#2E2F33;--mt-brand:#3385FF;--mt-negative:#FF6363;--mt-positive:#1ED45A;--mt-cautionary:#FFA938;--mt-fill:#46474C;--mt-axis:#5A5C63;--mt-shadow-popover:0 4px 6px -2px rgba(0,0,0,.4),0 10px 15px -3px rgba(0,0,0,.4);--cds-surface-popover:#212225;color-scheme:dark}}
+:root[data-theme="dark"]{--mt-bg:#0F0F10;--mt-surface:#1B1C1E;--mt-fg:#F7F7F8;--mt-fg-secondary:rgba(194,196,200,.88);--mt-line:#333438;--mt-line-strong:#37383C;--mt-line-faint:#2E2F33;--mt-brand:#3385FF;--mt-negative:#FF6363;--mt-positive:#1ED45A;--mt-cautionary:#FFA938;--mt-fill:#46474C;--mt-axis:#5A5C63;--mt-shadow-popover:0 4px 6px -2px rgba(0,0,0,.4),0 10px 15px -3px rgba(0,0,0,.4);--cds-surface-popover:#212225;color-scheme:dark}
 .page{padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .dash-skeleton{opacity:.5}
 .lx{position:relative;display:flex;flex-direction:column;gap:var(--cds-gap-lg);font-family:var(--font-anthropic-sans);color:var(--color-fg);max-width:1120px;margin-inline:auto;font-variant-numeric:tabular-nums}
@@ -92,3 +98,21 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .lx-hc small{font-size:.68rem;white-space:nowrap}
 .lx-hh{font-size:.7rem}
 .lx-grid2 .lx-rchart{--lw:6.5rem;--vw:4.8rem}
+
+/* Montage typography scale (packages/theme typography): size / line-height / letter-spacing; weights regular 400, medium 500, bold 600-700 */
+.lx h1{font-family:var(--font-anthropic-sans);font-weight:700;font-size:1.5rem;line-height:2rem;letter-spacing:-.023em}
+.lx-take{font-size:1.125rem;line-height:1.625rem;font-weight:500;letter-spacing:-.002em}
+.lx h2{font-size:1.0625rem;line-height:1.5rem;font-weight:600;letter-spacing:0}
+.lx-note,.lx-card .sub,.lx-strip .lbl,.lx-strip .sub,.lx-kpi .lbl,.lx-legend,.lx-pick,.lx-gt,.lx-hh,.lx-rl small{font-size:.75rem;line-height:1rem;letter-spacing:.0252em}
+.lx-rl,.lx-rv,.lx-hl,.lx-tbl{font-size:.875rem;line-height:1.25rem;letter-spacing:.0145em}
+.lx-lead .val{font-size:2.25rem;line-height:3rem;font-weight:700;letter-spacing:-.027em}
+.lx-sib .val{font-size:1.375rem;line-height:1.875rem;font-weight:600;letter-spacing:-.0194em}
+.lx-strip .val b,.lx-kpi .val b{font-weight:inherit}
+.lx-chg .val{font-size:1.375rem;line-height:1.875rem;font-weight:600}
+.lx-kpi .val{font-weight:600}
+.lx-card,.lx-strip,.lx-kpi{border-radius:var(--mt-radius-card)}
+.lx-pick select,.lx-hc{border-radius:var(--mt-radius-control)}
+.lx-bar{border-radius:0 var(--mt-radius-bar) var(--mt-radius-bar) 0}
+.lx-tbl td{border-bottom-color:var(--mt-line-faint)}
+.lx-tbl th{font-weight:500}
+.lx-tip{border-radius:var(--mt-radius-control)}

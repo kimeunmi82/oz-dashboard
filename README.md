@@ -80,4 +80,5 @@ python3 -m http.server -d site    # http://localhost:8000
 | 2026-10-21 | 대표 지표는 중앙값 + P25/P75 | 진료비 이상치(최대 1.38억) 때문에 평균은 왜곡됨 |
 | 2026-10-21 | d3를 site/vendor/에 포함(CDN 미사용) | 내부망 등 외부 접속이 막힌 환경에서도 열리게 하려고 |
 | 2026-10-21 | 연령대×성별 직접표준화로 보정 중앙값 산출 | 환자 구성 차이를 제거한 종별 비교 |
+| 2026-10-21 | 디자인 토큰은 Montage(wanteddev/montage-web, MIT)의 theme 패키지 값 사용: 라이트/다크 시맨틱 색, 서체 단계, 반경 12/8/4, 간격 4/8/16/20/24, 폰트 Pretendard | Montage 컴포넌트는 React용이라 정적 HTML에는 쓸 수 없어 토큰만 적용. 폰트는 jsDelivr CDN에서 받고 오프라인이면 시스템 한글 폰트로 대체 |
 | 2026-10-21 | 비교 단위는 익명 기관 ID, 종별·권역 | institution에 이름이 없고 hospital_open과 연결 불가 |
