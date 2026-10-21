@@ -119,9 +119,9 @@ def cls_summary():
         num = den = 0
         for k, wt in w.items():
             if len(strata.get(k, [])) >= 3: num += wt * st.median(strata[k]); den += wt
-        a = [r["amt"] for r in rows]; rxr = [r for r in rows if r["rx"]]
+        a = [r["amt"] for r in rows]
         out.append(dict(cl=cl, n=len(a), p25=round(pct(a, .25)), median=round(st.median(a)), p75=round(pct(a, .75)),
-                        adj_median=round(num / den), rx_amt_median=round(st.median(r["rxamt"] for r in rxr)) if rxr else 0))
+                        adj_median=round(num / den)))
     return out
 
 

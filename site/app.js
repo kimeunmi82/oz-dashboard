@@ -218,8 +218,8 @@
     }
     if ((d = state(document.getElementById('ch-rxc'), 'rx_class'))) barRows(document.getElementById('ch-rxc'), N(d, ['claims', 'share']).map((r) => ({ ...r, sub: '약효분류 ' + r.class_no + (+r.abx ? ' · 항생제' : '') })), 'name', 'share', (v) => (v * 100).toFixed(1) + '%', 'sub');
     if ((d = state(document.getElementById('ch-abxc'), 'abx_by_cls'))) barRows(document.getElementById('ch-abxc'), N(d, ['n', 'abx_claims', 'rate']).map((r) => ({ ...r, sub: 'n=' + f0(r.n) + ' · 항생제 ' + f0(r.abx_claims) + '건' })), 'cl', 'rate', (v) => v.toFixed(1) + '%', 'sub');
+    if (DATA.abx_by_cls && DATA.abx_by_dx) { const r1 = DATA.abx_by_cls.map((q) => +q.rate), r2 = DATA.abx_by_dx.map((q) => +q.rate); document.getElementById('abx-find').textContent = '호흡기 외래 명세서 중 항생제가 처방된 비율. 종별 ' + d3.min(r1).toFixed(1) + '~' + d3.max(r1).toFixed(1) + '%, 상병별 ' + d3.min(r2).toFixed(1) + '~' + d3.max(r2).toFixed(1) + '%로 차이가 크지 않습니다.'; }
     if ((d = state(document.getElementById('ch-abxd'), 'abx_by_dx'))) barRows(document.getElementById('ch-abxd'), N(d, ['n', 'abx_claims', 'rate']).map((r) => ({ ...r, sub: 'n=' + f0(r.n) + ' · 항생제 ' + f0(r.abx_claims) + '건' })), 'dx', 'rate', (v) => v.toFixed(1) + '%', 'sub');
-    if ((d = state(document.getElementById('ch-rxa'), 'cls_summary'))) barRows(document.getElementById('ch-rxa'), N(d, ['rx_amt_median']), 'cl', 'rx_amt_median', won);
   };
   render();
   let t;

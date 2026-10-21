@@ -11,16 +11,14 @@
 <div id="top" class="lx">
  <header>
   <h1 class="lx-title">호흡기 진료비 격차 모니터</h1>
-  <p class="lx-take">호흡기 외래 진료비 중앙값은 상급종합이 의원의 <b data-metric="gap_ratio">—</b>배입니다. 이번 집계에서는 연령·성별을 맞춰도 격차가 거의 그대로이고, 같은 종별 안에서 1.5배 이상 벗어난 기관은 확인한 <b data-metric="inst_checked">—</b>곳 중 <b data-metric="outlier_inst">—</b>곳입니다.</p>
+  <p class="lx-take">호흡기 외래 진료비는 종별에서 크게 갈립니다. 이번 집계에서는 연령·성별을 맞춰도 격차가 거의 그대로이고, 같은 종별 안에서 1.5배 이상 벗어난 기관은 확인한 <b data-metric="inst_checked">—</b>곳 중 <b data-metric="outlier_inst">—</b>곳입니다.</p>
   <p class="lx-note">프로토타입 · 실습 데이터 기준 · 호흡기 = 주상병 J코드, 외래 명세서 · 진료비 = 명세서 총진료비 · 기관은 익명 ID</p>
  </header>
- <section class="lx-kpis" id="sec-kpi">
-  <div class="lx-kpi"><span class="lbl">호흡기 외래 청구</span><span class="val"><b data-metric="j_claims">—</b><small>건</small></span></div>
-  <div class="lx-kpi"><span class="lbl">전체 청구 중 호흡기 비중</span><span class="val"><b data-metric="j_share">—</b><small>%</small></span></div>
-  <div class="lx-kpi"><span class="lbl">진료비 중앙값(명세서당)</span><span class="val"><b data-metric="median_cost">—</b><small>원</small></span></div>
-  <div class="lx-kpi"><span class="lbl">상급종합 ÷ 의원</span><span class="val"><b data-metric="gap_ratio">—</b><small>배</small></span></div>
-  <div class="lx-kpi"><span class="lbl">항생제 처방 명세서 비율</span><span class="val"><b data-metric="abx_rate">—</b><small>%</small></span></div>
-  <div class="lx-kpi"><span class="lbl">종별 내 1.5배 이상 기관</span><span class="val"><b data-metric="outlier_inst">—</b><small>곳</small></span></div>
+ <section class="lx-strip" id="sec-kpi">
+  <div class="lx-lead"><span class="lbl">상급종합 ÷ 의원 (진료비 중앙값)</span><span class="val"><b data-metric="gap_ratio">—</b><small>배</small></span></div>
+  <div class="lx-sib"><span class="lbl">호흡기 외래 청구</span><span class="val"><b data-metric="j_claims">—</b><small>건</small></span><span class="sub">전체 청구의 <b data-metric="j_share">—</b>%</span></div>
+  <div class="lx-sib"><span class="lbl">진료비 중앙값(명세서당)</span><span class="val"><b data-metric="median_cost">—</b><small>원</small></span></div>
+  <div class="lx-sib"><span class="lbl">항생제 처방 명세서</span><span class="val"><b data-metric="abx_rate">—</b><small>%</small></span></div>
  </section>
 
  <section class="lx-sec" id="sec-class">
@@ -93,19 +91,12 @@
    <div id="ch-rxc" class="lx-box dash-skeleton"></div>
   </div>
   <div class="lx-card">
-   <h2>항생제 처방률: 종별</h2>
-   <p class="sub">호흡기 외래 명세서 중 항생제가 처방된 비율. 종별 차이가 있는지 봅니다.</p>
+   <h2>항생제 처방률</h2>
+   <p class="sub" id="abx-find">호흡기 외래 명세서 중 항생제가 처방된 비율.</p>
+   <h3 class="lx-h3">종별</h3>
    <div id="ch-abxc" class="lx-box"></div>
-  </div>
-  <div class="lx-card">
-   <h2>항생제 처방률: 상병별</h2>
-   <p class="sub">바이러스성이 많은 상기도 상병이나 알레르기비염은 낮을 것으로 기대합니다.</p>
+   <h3 class="lx-h3">상병별</h3>
    <div id="ch-abxd" class="lx-box"></div>
-  </div>
-  <div class="lx-card">
-   <h2>종별 원외처방액</h2>
-   <p class="sub">명세서당 원외처방액 중앙값(원). 진료비 격차가 약값에서 오는지 가늠합니다.</p>
-   <div id="ch-rxa" class="lx-box dash-skeleton"></div>
   </div>
  </section>
 </div>
