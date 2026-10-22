@@ -2,7 +2,7 @@
 
 Add a metric: write a function returning JSON-serializable data, register it in AGGREGATES.
 """
-import csv, json, re, statistics as st, sys, urllib.request
+import csv, json, os, re, statistics as st, sys, urllib.request
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -217,7 +217,23 @@ AGGREGATES = {"kpi": kpi, "cls_summary": cls_summary, "dx_cls": dx_cls, "region"
               "monthly": monthly, "monthly_compare": monthly_compare, "inst_outliers": inst_outliers, "rx_class": rx_class, "abx_by_cls": abx_by_cls, "abx_by_dx": abx_by_dx}
 
 
+def push(rows):
+    """Upsert metrics into Supabase when SUPABASE_URL and SUPABASE_SERVICE_KEY are set; otherwise skip."""
+    url, key = os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_SERVICE_KEY")
+    if not (url and key):
+        print("skip supabase upsert (SUPABASE_URL / SUPABASE_SERVICE_KEY not set)")
+        return
+    req = urllib.request.Request(
+        f"{url.rstrip('/')}/rest/v1/metrics?on_conflict=id",
+        data=json.dumps(rows, ensure_ascii=False).encode(), method="POST",
+        headers={"apikey": key, "Authorization": f"Bearer {key}", "Content-Type": "application/json",
+                 "Prefer": "resolution=merge-duplicates,return=minimal"})
+    urllib.request.urlopen(req).close()
+    print(f"upserted {len(rows)} metrics to supabase")
+
+
 def main():
+    rows = []
     if SHEET_ID: fetch()
     results = check()
     for k, ok in results.items(): print("PASS" if ok else "FAIL", k)
@@ -227,6 +243,8 @@ def main():
         d = fn()
         (OUT / f"{name}.json").write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"built site/data/{name}.json ({len(d)} rows)")
+        rows.append({"id": name, "data": d})
+    push(rows)
 
 
 if __name__ == "__main__":

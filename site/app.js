@@ -15,7 +15,19 @@
   const hideTip = () => { tip.hidden = true; };
   const IDS = ['kpi', 'cls_summary', 'dx_cls', 'region', 'monthly', 'inst_outliers', 'rx_class', 'monthly_compare', 'abx_by_cls', 'abx_by_dx'];
   const DATA = {};
-  await Promise.all(IDS.map((id) => fetch('data/' + id + '.json').then((r) => { if (!r.ok) throw new Error(id); return r.json(); }).then((d) => { DATA[id] = d; }).catch(() => { DATA[id] = null; })));
+  const SB = window.SUPABASE_URL && window.SUPABASE_ANON_KEY;
+  if (SB) {
+    // one request: metrics?id=in.(...) -> [{id, data}]
+    const q = '/rest/v1/metrics?select=id,data&id=in.(' + IDS.join(',') + ')';
+    try {
+      const r = await fetch(window.SUPABASE_URL.replace(/\/$/, '') + q, { headers: { apikey: window.SUPABASE_ANON_KEY } });
+      if (!r.ok) throw new Error(r.status);
+      (await r.json()).forEach((m) => { DATA[m.id] = m.data; });
+    } catch (e) { /* missing ids fall through to null below */ }
+    IDS.forEach((id) => { if (!(id in DATA)) DATA[id] = null; });
+  } else {
+    await Promise.all(IDS.map((id) => fetch('data/' + id + '.json').then((r) => { if (!r.ok) throw new Error(id); return r.json(); }).then((d) => { DATA[id] = d; }).catch(() => { DATA[id] = null; })));
+  }
   const state = (box, id) => {
     const d = DATA[id];
     if (d) { box.classList.remove('dash-skeleton'); return d; }

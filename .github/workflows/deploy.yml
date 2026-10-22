@@ -29,6 +29,9 @@ jobs:
           python-version: "3.12"
       - name: Fetch data, validate, aggregate
         run: python3 build.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
