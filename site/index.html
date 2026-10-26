@@ -24,6 +24,12 @@
   <div class="lx-sib"><span class="lbl">항생제 처방 명세서</span><span class="val"><b data-metric="abx_rate">—</b><small>%</small></span></div>
  </section>
 
+ <section class="lx-strip lx-strip3" id="sec-kpi-all" aria-label="호흡기 청구 현황">
+  <div class="lx-sib"><span class="lbl">총 명세서 수 (호흡기 J)</span><span class="val"><b data-metric="claims_total">—</b><small>건</small></span></div>
+  <div class="lx-sib"><span class="lbl">총 진료비 (호흡기 J)</span><span class="val"><b data-metric="total_cost">—</b><small>원</small></span></div>
+  <div class="lx-sib"><span class="lbl">수진자 수 (호흡기 J)</span><span class="val"><b data-metric="patients_total">—</b><small>명</small></span></div>
+ </section>
+
  <section class="lx-sec" id="sec-class">
   <div class="lx-card">
    <h2>종별 진료비 격차</h2>
@@ -76,6 +82,13 @@
   </div>
  </section>
 
+ <section class="lx-card" id="sec-cost">
+  <h2>월별 총진료비와 수진자 수</h2>
+  <p class="sub">호흡기(주상병 J) 청구. 꺾은선은 종별 총진료비(청구액, 왼쪽 축), 막대는 그 달 수진자 수(오른쪽 축)입니다.</p>
+  <div class="lx-legend" id="lg-cost"></div>
+  <div id="ch-cost" class="lx-box"></div>
+ </section>
+
  <section class="lx-card" id="sec-inst">
   <h2>종별 중앙값에서 크게 벗어난 기관</h2>
   <p class="sub">호흡기 외래 8건 이상 기관 중, 자기 종별 중앙값 대비 배수가 큰 순서. 건수가 적은 기관은 우연일 수 있으니 n을 함께 보세요.</p>
@@ -103,6 +116,20 @@
   </div>
  </section>
 </div>
+ <section class="lx-card" id="sec-summary">
+  <h2>Summary</h2>
+  <ul class="lx-sumlist">
+   <li><b>독자</b>
+    <ul><li>식약처 보건의료 분석 담당자와 팀·상사</li><li>월 단위로 열어 호흡기 진료비 격차의 추이와 이상 신호를 확인</li></ul></li>
+   <li><b>KPI</b>
+    <ul><li>상급종합 ÷ 의원 진료비 격차 배수</li><li>호흡기 외래 청구 건수</li><li>진료비 중앙값(명세서당)</li><li>항생제 처방 명세서 비율</li><li>호흡기(J) 총 명세서 수 · 총 진료비 · 수진자 수</li></ul></li>
+   <li><b>차트</b>
+    <ul><li>종별 진료비 분포(P25–P75·중앙값·보정)</li><li>상병×종별 중앙값</li><li>권역별 격차</li><li>월별 청구 건수와 진료비 중앙값</li><li>월별 변화(전년 동월 대비)</li><li>월별 총진료비와 수진자 수</li><li>종별 중앙값에서 벗어난 기관</li><li>처방 성분과 항생제 처방률</li></ul></li>
+   <li><b>한 줄 인사이트</b>
+    <ul><li class="lx-insight" id="sum-insight">—</li></ul></li>
+  </ul>
+ </section>
+
 </div>
 <script src="vendor/d3.min.js"></script>
 <script src="config.js"></script>

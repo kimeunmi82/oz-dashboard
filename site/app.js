@@ -13,7 +13,7 @@
     tip.style.top = (ev.clientY - b.top + 14) + 'px';
   };
   const hideTip = () => { tip.hidden = true; };
-  const IDS = ['kpi', 'cls_summary', 'dx_cls', 'region', 'monthly', 'inst_outliers', 'rx_class', 'monthly_compare', 'abx_by_cls', 'abx_by_dx'];
+  const IDS = ['kpi', 'cls_summary', 'dx_cls', 'region', 'monthly', 'inst_outliers', 'rx_class', 'monthly_compare', 'abx_by_cls', 'abx_by_dx', 'monthly_cost_cls', 'monthly_patients'];
   const DATA = {};
   const SB = window.SUPABASE_URL && window.SUPABASE_ANON_KEY;
   if (SB) {
@@ -154,6 +154,50 @@
 
   const pctTxt = (v) => (v == null ? '비교 불가' : (v > 0 ? '+' : '') + (v * 100).toFixed(1) + '%');
   const flagTxt = (v) => (v >= 0 ? '▲ 증가' : '▼ 감소');
+
+  const CLS = ['상급종합', '종합병원', '병원', '의원'];
+  const comboChart = (box, cost, pts) => {
+    const hgt = 280, m = { l: 52, r: 52, t: 26, b: 26 };
+    const { svg, w } = svgBase(box, hgt);
+    const months = pts.map((p) => p.month);
+    const byM = new Map(months.map((mo) => [mo, {}]));
+    cost.forEach((r) => { byM.get(r.month)[r.group] = { total: +r.total, n: +r.n }; });
+    const patients = new Map(pts.map((p) => [p.month, +p.patients]));
+    const x = d3.scaleBand(months, [m.l, w - m.r]).padding(0.25);
+    const xc = (mo) => x(mo) + x.bandwidth() / 2;
+    const yL = d3.scaleLinear([0, d3.max(cost, (r) => +r.total)], [hgt - m.b, m.t]).nice(5);
+    const tk = yL.ticks(5), k = tk.length - 1;
+    const maxP = d3.max(pts, (p) => +p.patients), step = [10, 20, 25, 50, 100, 150, 200, 250, 500, 1000].find((s) => s * k >= maxP) || 1000;
+    const yR = d3.scaleLinear([0, step * k], yL.range());
+    svg.append('text').attr('x', 2).attr('y', 12).attr('text-anchor', 'start').text('총진료비(백만원)');
+    svg.append('text').attr('x', w - 2).attr('y', 12).attr('text-anchor', 'end').text('수진자 수(명)');
+    tk.forEach((t, i) => {
+      svg.append('line').attr('x1', m.l).attr('x2', w - m.r).attr('y1', yL(t)).attr('y2', yL(t)).attr('stroke', 'var(--cds-chart-grid)');
+      svg.append('text').attr('x', m.l - 6).attr('y', yL(t) + 4).attr('text-anchor', 'end').text(f0(t / 1e6));
+      svg.append('text').attr('x', w - m.r + 6).attr('y', yL(t) + 4).attr('text-anchor', 'start').text(f0(i * step));
+    });
+    months.forEach((mo, i) => { if (i % (w < 520 ? 4 : 3) === 0) svg.append('text').attr('x', xc(mo)).attr('y', hgt - 6).attr('text-anchor', 'middle').text(mo.slice(2).replace('-', '.')); });
+    months.forEach((mo) => {
+      const v = patients.get(mo);
+      svg.append('rect').attr('x', x(mo)).attr('width', x.bandwidth()).attr('y', yR(v)).attr('height', yR(0) - yR(v)).attr('rx', 2).style('fill', 'var(--mt-bar)');
+    });
+    CLS.forEach((g, i) => {
+      const pts2 = months.map((mo) => [xc(mo), yL((byM.get(mo)[g] || { total: 0 }).total)]);
+      svg.append('path').attr('d', d3.line()(pts2)).attr('fill', 'none').style('stroke', 'var(--mt-s' + (i + 1) + ')').attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+    });
+    const rule = svg.append('line').attr('y1', m.t).attr('y2', hgt - m.b).attr('stroke', 'var(--cds-chart-axis)').attr('stroke-dasharray', '3 3').attr('visibility', 'hidden');
+    svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', w - m.l - m.r).attr('height', hgt - m.t - m.b).attr('fill', 'transparent')
+      .on('mousemove', (ev) => {
+        const px = ev.clientX - svg.node().getBoundingClientRect().left;
+        const mo = months.reduce((a2, b2) => (Math.abs(xc(b2) - px) < Math.abs(xc(a2) - px) ? b2 : a2));
+        rule.attr('x1', xc(mo)).attr('x2', xc(mo)).attr('visibility', 'visible');
+        showTip(ev, [mo].concat(CLS.map((g) => g + ' ' + won((byM.get(mo)[g] || { total: 0 }).total) + ' (' + f0((byM.get(mo)[g] || { n: 0 }).n) + '건)')).concat(['수진자 ' + f0(patients.get(mo)) + '명']));
+      }).on('mouseleave', () => { rule.attr('visibility', 'hidden'); hideTip(); });
+    const lg = document.getElementById('lg-cost'); lg.replaceChildren();
+    CLS.forEach((g, i) => { const s = h('span'); const l = h('i', 'ln'); l.style.background = 'var(--mt-s' + (i + 1) + ')'; s.append(l, document.createTextNode(g + ' 총진료비')); lg.appendChild(s); });
+    const sb = h('span'); sb.append(h('i', 'bx'), document.createTextNode('수진자 수(오른쪽 축)')); lg.appendChild(sb);
+  };
+
   let chosen = null;
   const renderChange = () => {
     const rows = DATA.monthly_compare; if (!rows) return;
@@ -202,6 +246,12 @@
 
   const render = () => {
     renderChange();
+    if (DATA.kpi && DATA.abx_by_cls && DATA.abx_by_dx) {
+      const kv = (mt) => { const r = DATA.kpi.find((q) => q.metric === mt); return r ? +r.value : null; };
+      const rates = DATA.abx_by_cls.concat(DATA.abx_by_dx).map((q) => +q.rate);
+      document.getElementById('sum-insight').textContent = '호흡기 외래 진료비는 종별에서 갈리며(상급종합이 의원의 ' + kv('gap_ratio').toFixed(2) + '배), 항생제 처방률은 종별·상병별 모두 ' + d3.min(rates).toFixed(1) + '~' + d3.max(rates).toFixed(1) + '%로 비슷하고, 같은 종별 안에서 1.5배 이상 벗어난 기관은 ' + f0(kv('inst_checked')) + '곳 중 ' + f0(kv('outlier_inst')) + '곳입니다.';
+    }
+    if (DATA.monthly_cost_cls && DATA.monthly_patients) comboChart(document.getElementById('ch-cost'), DATA.monthly_cost_cls, DATA.monthly_patients);
     document.querySelectorAll('.sw-med').forEach((e) => { e.style.background = accent(); });
     document.querySelectorAll('[data-metric]').forEach((el) => {
       if (!DATA.kpi) { el.textContent = '—'; return; }

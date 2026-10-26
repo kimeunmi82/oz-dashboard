@@ -94,9 +94,37 @@ def scope():
     return rows
 
 
+def scope_j_all():
+    """All respiratory claims (main_sick starts with J), outpatient and inpatient, with institution class. Cached."""
+    if "jall" in _cache: return _cache["jall"]
+    ins = {r["yid"]: r for r in table("institution")}
+    rows = [dict(jid=r["jid"], month=r["recu_fr_dd"][:7], amt=int(r["rvd_rpe_tamt_amt"]),
+                 cl=CLASSES.get(ins[r["yid"]]["cl_cd"], ins[r["yid"]]["cl_cd"]))
+            for r in table("claim") if r["main_sick"].startswith("J")]
+    _cache["jall"] = rows
+    return rows
+
+
+def monthly_cost_cls():
+    """Month x institution class totals of rvd_rpe_tamt_amt (KRW) over respiratory claims, zero-filled."""
+    rows = scope_j_all()
+    tot, cnt = defaultdict(int), defaultdict(int)
+    for r in rows: tot[(r["month"], r["cl"])] += r["amt"]; cnt[(r["month"], r["cl"])] += 1
+    return [dict(month=m, group=g, total=tot[(m, g)], n=cnt[(m, g)])
+            for m in sorted({r["month"] for r in rows}) for g in CLASSES.values()]
+
+
+def monthly_patients():
+    """Distinct patients (jid) with a respiratory claim in each month."""
+    p = defaultdict(set)
+    for r in scope_j_all(): p[r["month"]].add(r["jid"])
+    return [dict(month=m, patients=len(v)) for m, v in sorted(p.items())]
+
+
 def kpi():
-    j, total = scope(), len(table("claim"))
-    all_j = sum(1 for r in table("claim") if r["main_sick"].startswith("J"))
+    j, claims = scope(), table("claim")
+    total = len(claims)
+    all_j = sum(1 for r in claims if r["main_sick"].startswith("J"))
     cls = {c["cl"]: c["median"] for c in cls_summary()}
     insts = inst_stats()
     return [dict(metric="j_claims", value=len(j)), dict(metric="j_share", value=round(all_j / total * 100, 1)),
@@ -104,7 +132,11 @@ def kpi():
             dict(metric="gap_ratio", value=round(cls["상급종합"] / cls["의원"], 2)),
             dict(metric="abx_rate", value=round(sum(r["abx"] for r in j) / len(j) * 100, 1)),
             dict(metric="outlier_inst", value=sum(1 for r in insts if r["ratio"] >= FLAG_RATIO)),
-            dict(metric="inst_checked", value=len(insts))]
+            dict(metric="inst_checked", value=len(insts)),
+            # respiratory (main_sick J) claims, outpatient + inpatient: row count, sum of rvd_rpe_tamt_amt (KRW), distinct jid
+            dict(metric="claims_total", value=len(scope_j_all())),
+            dict(metric="total_cost", value=sum(r["amt"] for r in scope_j_all())),
+            dict(metric="patients_total", value=len({r["jid"] for r in scope_j_all()}))]
 
 
 def cls_summary():
@@ -214,7 +246,8 @@ def abx_by_dx():
 
 
 AGGREGATES = {"kpi": kpi, "cls_summary": cls_summary, "dx_cls": dx_cls, "region": region,
-              "monthly": monthly, "monthly_compare": monthly_compare, "inst_outliers": inst_outliers, "rx_class": rx_class, "abx_by_cls": abx_by_cls, "abx_by_dx": abx_by_dx}
+              "monthly": monthly, "monthly_compare": monthly_compare, "inst_outliers": inst_outliers, "rx_class": rx_class, "abx_by_cls": abx_by_cls, "abx_by_dx": abx_by_dx,
+              "monthly_cost_cls": monthly_cost_cls, "monthly_patients": monthly_patients}
 
 
 def push(rows):

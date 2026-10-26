@@ -116,3 +116,33 @@
 .lx-tbl td{border-bottom-color:var(--mt-line-faint)}
 .lx-tbl th{font-weight:500}
 .lx-tip{border-radius:var(--mt-radius-control)}
+.lx-strip3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:700px){.lx-strip3{grid-template-columns:1fr}}
+
+/* series colours for the combined chart (Montage blue / orange 40 / green 40 / violet 45; dark: lighter steps) */
+:root{--mt-s1:#0066FF;--mt-s2:#D47800;--mt-s3:#009632;--mt-s4:#5B37ED;--mt-bar:#DBDCDF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--mt-s1:#3385FF;--mt-s2:#FFA938;--mt-s3:#1ED45A;--mt-s4:#7D5EF7;--mt-bar:#37383C}}
+:root[data-theme="dark"]{--mt-s1:#3385FF;--mt-s2:#FFA938;--mt-s3:#1ED45A;--mt-s4:#7D5EF7;--mt-bar:#37383C}
+.lx-legend .ln{display:inline-block;width:1.2rem;height:2px;vertical-align:middle;margin-right:.35rem;border-radius:1px}
+.lx-legend .bx{display:inline-block;width:.8rem;height:.8rem;vertical-align:middle;margin-right:.35rem;border-radius:2px;background:var(--mt-bar)}
+.lx-sum{display:grid;grid-template-columns:8.5rem 1fr;gap:var(--cds-gap-sm) var(--cds-gap-md);margin:0;font-size:.875rem;line-height:1.25rem}
+.lx-sum dt{color:var(--color-fg-muted);font-size:.75rem;line-height:1.25rem}
+.lx-sum dd{margin:0;min-width:0}
+.lx-insight{font-weight:600;font-size:1.0625rem;line-height:1.5rem}
+@media (max-width:700px){.lx-sum{grid-template-columns:1fr}.lx-sum dd{margin-bottom:var(--cds-gap-sm)}}
+.lx-sumlist,.lx-sumlist ul{margin:0;padding-left:1.25rem}
+.lx-sumlist{font-size:.875rem;line-height:1.375rem;display:flex;flex-direction:column;gap:var(--cds-gap-md);list-style:disc}
+.lx-sumlist>li>b{font-weight:600}
+.lx-sumlist ul{list-style:circle;margin-top:var(--cds-gap-xs);display:flex;flex-direction:column;gap:2px;color:var(--color-fg-muted)}
+.lx-sumlist ul li{color:var(--color-fg)}
+.lx-sumlist .lx-insight{font-weight:600}
+.lx-sumlist{font-size:.9375rem;line-height:1.5rem}
+.lx-sumlist>li>b{font-size:1.125rem;line-height:1.625rem;font-weight:700}
+.lx-sumlist .lx-insight{color:var(--accent);font-size:1.0625rem;line-height:1.625rem}
+/* Summary card: Montage brand tint surface (blue 50 at ~7% over the panel), stronger brand blue for the insight text */
+:root{--mt-brand-strong:#0054D1}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--mt-brand-strong:#69A5FF}}
+:root[data-theme="dark"]{--mt-brand-strong:#69A5FF}
+#sec-summary{background:color-mix(in srgb,var(--accent) 7%,var(--color-panel));border-color:color-mix(in srgb,var(--accent) 28%,var(--color-panel))}
+#sec-summary .lx-insight{color:var(--mt-brand-strong)}
+#sec-summary{margin-top:40px;max-width:1120px;margin-inline:auto}
