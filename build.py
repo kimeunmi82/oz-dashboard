@@ -95,12 +95,12 @@ def scope():
 
 
 def scope_j_all():
-    """All respiratory claims (main_sick starts with J), outpatient and inpatient, with institution class. Cached."""
+    """Respiratory outpatient claims (main_sick starts with J, fom_tp_cd 031; inpatient excluded) with institution class. Cached."""
     if "jall" in _cache: return _cache["jall"]
     ins = {r["yid"]: r for r in table("institution")}
     rows = [dict(jid=r["jid"], month=r["recu_fr_dd"][:7], amt=int(r["rvd_rpe_tamt_amt"]),
                  cl=CLASSES.get(ins[r["yid"]]["cl_cd"], ins[r["yid"]]["cl_cd"]))
-            for r in table("claim") if r["main_sick"].startswith("J")]
+            for r in table("claim") if r["main_sick"].startswith("J") and r["fom_tp_cd"] == "031"]
     _cache["jall"] = rows
     return rows
 
@@ -133,7 +133,7 @@ def kpi():
             dict(metric="abx_rate", value=round(sum(r["abx"] for r in j) / len(j) * 100, 1)),
             dict(metric="outlier_inst", value=sum(1 for r in insts if r["ratio"] >= FLAG_RATIO)),
             dict(metric="inst_checked", value=len(insts)),
-            # respiratory (main_sick J) claims, outpatient + inpatient: row count, sum of rvd_rpe_tamt_amt (KRW), distinct jid
+            # respiratory (main_sick J) outpatient claims (inpatient excluded): row count, sum of rvd_rpe_tamt_amt (KRW), distinct jid
             dict(metric="claims_total", value=len(scope_j_all())),
             dict(metric="total_cost", value=sum(r["amt"] for r in scope_j_all())),
             dict(metric="patients_total", value=len({r["jid"] for r in scope_j_all()}))]
